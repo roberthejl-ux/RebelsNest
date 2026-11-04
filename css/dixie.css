@@ -149,7 +149,6 @@ a:hover {
     box-sizing: border-box;
     max-width: min(72%, 900px);
     padding: 2px;
-    background: #A02042;
     color: #fff;
     font-size: clamp(12px, 1.7vw, 21px);
     font-style: italic;
