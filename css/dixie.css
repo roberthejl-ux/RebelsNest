@@ -116,6 +116,53 @@ a:hover {
     background-color: #C7C7C7;
 }
 
+.hero-image {
+    position: relative;
+}
+
+.hero-background {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 12%;
+    left: 10%;
+    display: flex;
+    width: 55%;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.hero-logo {
+    display: block;
+    width: 72%;
+    height: auto;
+}
+
+.hero-quote {
+    box-sizing: border-box;
+    max-width: 90%;
+    margin-top: 1.5rem;
+    padding: 0.7em 1em;
+    background: #A02042;
+    color: #fff;
+    font-size: clamp(12px, 1.5vw, 21px);
+    font-style: italic;
+    line-height: 1.4;
+    text-align: left;
+}
+
+.hero-quote cite {
+    display: block;
+    margin-top: 0.35em;
+    color: #fff;
+    font-style: normal;
+    text-align: right;
+}
+
 .news-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -252,6 +299,23 @@ li {
         margin-left: 2%;
     }
 
+    .hero-overlay {
+        top: 8%;
+        left: 6%;
+        width: 65%;
+    }
+
+    .hero-logo {
+        width: 68%;
+    }
+
+    .hero-quote {
+        max-width: 100%;
+        margin-top: 0.75rem;
+        padding: 0.4em 0.65em;
+        font-size: clamp(10px, 2.2vw, 16px);
+    }
+
     .news-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -273,6 +337,22 @@ li {
 }
 
 @media (max-width: 480px) {
+    .hero-overlay {
+        top: 5%;
+        left: 5%;
+        width: 72%;
+    }
+
+    .hero-logo {
+        width: 60%;
+    }
+
+    .hero-quote {
+        margin-top: 0.4rem;
+        font-size: 10px;
+        line-height: 1.25;
+    }
+
     .news-grid {
         grid-template-columns: 1fr;
     }
