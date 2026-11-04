@@ -148,7 +148,7 @@ a:hover {
 .hero-quote {
     box-sizing: border-box;
     max-width: min(72%, 900px);
-    padding: 0.8em 1.2em;
+    padding: 2px;
     background: #A02042;
     color: #fff;
     font-size: clamp(12px, 1.7vw, 21px);
@@ -312,7 +312,7 @@ li {
 
     .hero-quote {
         max-width: 82%;
-        padding: 0.5em 0.8em;
+        padding: 2px;
         font-size: clamp(10px, 2vw, 16px);
     }
 
