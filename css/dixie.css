@@ -128,31 +128,33 @@ a:hover {
 
 .hero-overlay {
     position: absolute;
-    top: 12%;
-    left: 10%;
+    inset: 0;
     display: flex;
-    width: 55%;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 2rem 1rem 0;
+    text-align: center;
 }
 
 .hero-logo {
     display: block;
-    width: 72%;
+    width: min(38%, 460px);
+    max-width: 460px;
     height: auto;
 }
 
 .hero-quote {
     box-sizing: border-box;
-    max-width: 90%;
-    margin-top: 1.5rem;
-    padding: 0.7em 1em;
+    max-width: min(72%, 900px);
+    padding: 0.8em 1.2em;
     background: #A02042;
     color: #fff;
-    font-size: clamp(12px, 1.5vw, 21px);
+    font-size: clamp(12px, 1.7vw, 21px);
     font-style: italic;
     line-height: 1.4;
-    text-align: left;
+    text-align: center;
 }
 
 .hero-quote span {
@@ -160,7 +162,7 @@ a:hover {
     margin-top: 0.35em;
     color: #fff;
     font-style: normal;
-    text-align: right;
+    text-align: center;
 }
 
 .news-grid {
@@ -300,20 +302,18 @@ li {
     }
 
     .hero-overlay {
-        top: 8%;
-        left: 6%;
-        width: 65%;
+        gap: 0.6rem;
+        padding-top: 1rem;
     }
 
     .hero-logo {
-        width: 68%;
+        width: min(46%, 320px);
     }
 
     .hero-quote {
-        max-width: 100%;
-        margin-top: 0.75rem;
-        padding: 0.4em 0.65em;
-        font-size: clamp(10px, 2.2vw, 16px);
+        max-width: 82%;
+        padding: 0.5em 0.8em;
+        font-size: clamp(10px, 2vw, 16px);
     }
 
     .news-grid {
@@ -337,18 +337,12 @@ li {
 }
 
 @media (max-width: 480px) {
-    .hero-overlay {
-        top: 5%;
-        left: 5%;
-        width: 72%;
-    }
-
     .hero-logo {
-        width: 60%;
+        width: min(52%, 220px);
     }
 
     .hero-quote {
-        margin-top: 0.4rem;
+        max-width: 88%;
         font-size: 10px;
         line-height: 1.25;
     }
