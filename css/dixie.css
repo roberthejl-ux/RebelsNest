@@ -116,29 +116,37 @@ a:hover {
     background-color: #C7C7C7;
 }
 
-.news_chronologie {
-    display: block;
-    width: 100%;
-    margin-bottom: 8px;
-    padding: 50px 0;
-    border: 1px dotted #5B5B5B;
-    border-radius: 6px;
-    background-image: url("../img/shiloh_light.gif");
-    background-position: -21px 60%;
-    font-size: 200%;
-    line-height: 120%;
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
 }
 
-.news {
+.news-card {
+    box-sizing: border-box;
+    display: flex;
+    min-width: 0;
     height: 200px;
-    padding-top: 15px;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 15px;
+    overflow: hidden;
     border: 1px dotted #5B5B5B;
     border-radius: 6px;
-    background-position: 0 84%;
+    background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     font-size: 140%;
     line-height: 110%;
+}
+
+.news_chronologie {
+    background-image: url("../img/shiloh_light.gif");
+    background-position: center 60%;
+}
+
+.news {
+    background-position: center 84%;
 }
 
 .box1 {
@@ -244,6 +252,10 @@ li {
         margin-left: 2%;
     }
 
+    .news-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .right_part {
         position: static;
         width: auto;
@@ -257,5 +269,11 @@ li {
         width: auto;
         max-width: 100%;
         margin: 0 auto 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .news-grid {
+        grid-template-columns: 1fr;
     }
 }
