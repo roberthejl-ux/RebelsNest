@@ -1,0 +1,263 @@
+@charset "UTF-8";
+body {
+    background-color: #C7C7C7;
+    color: #464646;
+    font-size: 17px;
+    font-family: Constantia, "Lucida Bright", "DejaVu Serif", Georgia, serif;
+    margin: 0;
+    line-height: 25px;
+}
+a {
+    color: #000000;
+    text-decoration: none;
+}
+a:hover {
+    color: #A02042;
+}
+.space {
+    margin-bottom: 24px;
+    clear: both;
+    margin-top: 24px;
+    text-align: center;
+}
+.container_obsah {
+    text-align: left;
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-top: 0px;
+    display: block;
+    top: 0px;
+    width: 50%;
+    padding-bottom: 60px;
+}
+.container_obsah_full {
+    text-align: center;
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-top: 0px;
+    display: block;
+    top: 0px;
+    width: 70%;
+    padding-bottom: 60px;
+}
+.container_menu {
+    font-family: 'Comfortaa', cursive;
+    text-align: center;
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-bottom: 0px;
+    border-bottom: thin solid #777777;
+    margin-top: 0px;
+    display: block;
+    font-size: 15px;
+}
+.popisek {
+    min-width: 0px;
+    color: #606060;
+    text-align: left;
+    margin-bottom: 20px;
+    margin-left: 0px;
+    padding-bottom: 3px;
+    width: 100%;
+    font-style: oblique;
+    padding-left: 28px;
+    background-image: url(../img/paragraph.png);
+    background-repeat: no-repeat;
+}
+.nadpis {
+    font-size: 27px;
+    color: #A02042;
+    text-align: left;
+    padding-bottom: 3px;
+    padding-top: 11px;
+    font-weight: bold;
+    line-height: 30px;
+}
+.podnadpis {
+    font-size: 22px;
+    color: #A02042;
+    text-align: left;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    clear: both;
+}
+.logo {
+    text-align: center;
+    margin-left: auto;
+    margin-top: 0px;
+    margin-right: auto;
+    width: 100%;
+}
+.button {
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    display: inline-block;
+    margin-right: 4px;
+    margin-left: 4px;
+    margin-bottom: 0px;
+    text-align: center;
+    width: auto;
+    border-right-color: undefined;
+}
+.datum {
+    font-weight: bold;
+    color: #A02042;
+}
+.red_text {
+    color: #A02042;
+    border-left: 1px dotted #A02042;
+    border-right-width: 1px;
+    border-right-style: dotted;
+    padding-left: 4px;
+    padding-right: 4px;
+    margin-right: 1px;
+}
+.zdroj {
+    color: #000000;
+    font-style: italic;
+}
+.hlavicka {
+    position: sticky;
+    top: 0px;
+    background-color: #C7C7C7;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    display: block;
+    bottom: auto;
+    padding-bottom: 10px;
+    width: auto;
+    opacity: 1;
+    z-index: 1;
+}
+.news_chronologie  {
+    border-radius: 6px;
+    border: 1px dotted #5B5B5B;
+    font-size: 200%;
+	line-height: 120%;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    background-image: url("../img/shiloh_light.gif");
+    background-position: -21px 60%;
+    width: 100%;
+    display: block;
+    margin-bottom: 8px;
+    }
+.news {
+    border-radius: 6px;
+    border: 1px dotted #5B5B5B;
+    font-size: 140%;
+    line-height: 110%;
+    padding-top: 15px;
+    height: 200px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 0px 84%;
+}
+.box1 {
+   background-image: url(../img/news_mapa.jpg);
+}
+.box2 {
+   background-image: url(../img/news_trent.jpg);
+}
+.box3 {
+   background-image: url("../img/news_perkus.jpg");
+}
+.box4 {
+   background-image: url("../img/news_insignie.jpg");
+}
+.center {
+    text-align: center;
+}
+.justify {
+    text-align: justify;
+}
+.left {
+    text-align: left;
+    margin-top: 10px;
+}
+.img_half_left {
+    width: 54%;
+    float: left;
+    margin-right: 20px;
+}
+.img_half_right {
+    width: 50%;
+    float: right;
+    margin-right: 0px;
+    margin-left: 17px;
+}
+.td_leva  {
+    padding-right: 20px;
+    text-align: right;
+}
+.td_prava  {
+    text-align: left;
+    padding-left: 20px;
+	}
+.right_part {
+    position: fixed;
+    width: 16%;
+    text-align: center;
+    margin-right: 15%;
+    margin-top: 10px;
+    padding-top: 3px;
+    right: 0px;
+    border-left-width: thin;
+    border-left-style: dotted;
+}
+.right_part_button {
+    font-family: 'Comfortaa', cursive;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    margin-bottom: 3px;
+    font-size: 15px;
+    line-height: 19px;
+}
+li {
+    list-style-image: url(../img/sipka_vpravo.png);
+    list-style-position: outside;
+    margin-left: -25px;
+}
+.citat {
+    background-image: url(../img/uvozovky.png);
+    padding-top: 13px;
+    padding-left: 28px;
+    background-repeat: no-repeat;
+    padding-right: 13px;
+    color: #606060;
+    font-style: oblique;
+}
+.citat_autor {
+    padding-top: 13px;
+    padding-left: 28px;
+    background-repeat: no-repeat;
+    padding-right: 13px;
+    color: #606060;
+    text-align: right;
+    font-style: oblique;
+}
+@media (max-width: 768px){
+.container_obsah {
+    text-align: left;
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-top: 0px;
+    display: block;
+    top: 0px;
+    width: 50%;
+    padding-bottom: 60px;}
+.container_menu {
+    font-family: 'Comfortaa', cursive;
+    text-align: center;
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-bottom: 0px;
+    border-bottom: thin solid #777777;
+    margin-top: 0px;
+    display: block;
+    font-size: 15px;
+}	
