@@ -155,7 +155,7 @@ a:hover {
     text-align: left;
 }
 
-.hero-quote cite {
+.hero-quote span {
     display: block;
     margin-top: 0.35em;
     color: #fff;
