@@ -282,6 +282,10 @@ li {
         margin-left: 2%;
     }
 
+    .logo img {
+        width: 100%;
+    }
+
     .hero-overlay {
         gap: 0.6rem;
         padding-top: 0.75rem;
