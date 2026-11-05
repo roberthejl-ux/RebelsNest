@@ -350,6 +350,11 @@ li {
         display: block;
     }
 
+    /* Pages without the toggle keep navigation visible instead of hiding it. */
+    .hlavicka:not(:has(.mobile-menu-toggle)) .container_menu {
+        display: block;
+    }
+
     .container_menu .button {
         display: block;
         margin: 0;
