@@ -111,16 +111,6 @@ a:hover {
     background-color: #C7C7C7;
 }
 
-/* Put the Armada page navigation before its logo, matching the home-page layout. */
-body:has(img[src="img/armada/west_point.gif"]) .hlavicka {
-    display: flex;
-    flex-direction: column;
-}
-
-body:has(img[src="img/armada/west_point.gif"]) .hlavicka > .container_menu {
-    order: -1;
-}
-
 .mobile-menu-toggle,
 .mobile-menu-button {
     display: none;
@@ -292,10 +282,6 @@ li {
         margin-left: 2%;
     }
 
-    .logo img {
-        width: 97%;
-    }
-
     .hero-overlay {
         gap: 0.6rem;
         padding-top: 0.75rem;
@@ -357,11 +343,6 @@ li {
     }
 
     .mobile-menu-toggle:checked ~ .container_menu {
-        display: block;
-    }
-
-    /* Pages without the toggle keep navigation visible instead of hiding it. */
-    .hlavicka:not(:has(.mobile-menu-toggle)) .container_menu {
         display: block;
     }
 
