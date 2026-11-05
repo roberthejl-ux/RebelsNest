@@ -101,11 +101,6 @@ a:hover {
     color: #A02042;
 }
 
-.zdroj {
-    color: #000;
-    font-style: italic;
-}
-
 .hlavicka {
     position: sticky;
     z-index: 1;
@@ -211,15 +206,6 @@ a:hover {
 
 .center {
     text-align: center;
-}
-
-.justify {
-    text-align: justify;
-}
-
-.left {
-    margin-top: 10px;
-    text-align: left;
 }
 
 .img_half_left {
