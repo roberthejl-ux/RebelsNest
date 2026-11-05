@@ -204,22 +204,6 @@ a:hover {
     background-position: center 84%;
 }
 
-.box1 {
-    background-image: url("../img/news_mapa.jpg");
-}
-
-.box2 {
-    background-image: url("../img/news_trent.jpg");
-}
-
-.box3 {
-    background-image: url("../img/news_perkus.jpg");
-}
-
-.box4 {
-    background-image: url("../img/news_insignie.jpg");
-}
-
 .center {
     text-align: center;
 }
