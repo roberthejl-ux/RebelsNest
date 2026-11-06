@@ -1,112 +1,408 @@
-<!doctype html>
-<html>
-	
+<!DOCTYPE html>
+<html lang="cs">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mapa Konfederace</title>
-<link href="css/dixie.css" rel="stylesheet" type="text/css">
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300&display=swap');
-</style>
-<style>
-  html,
-  body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    overflow: hidden;
-  }
-  .hlavicka {
-    display: none;
-  }
-  .container_obsah_full {
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-  }
-  #animation_container {
-    position: relative !important;
-    display: block !important;
-    max-width: none !important;
-    margin: 0 auto !important;
-    padding: 0 !important;
-  }
-  #canvas {
-    max-width: none !important;
-    margin: 0 !important;
-  }
-</style>
-	<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
-<script src="js/mapa3.js"></script>
-<script>
-var canvas, stage, exportRoot, anim_container, dom_overlay_container, fnStartAnimation;
-function init() {
-	canvas = document.getElementById("canvas");
-	anim_container = document.getElementById("animation_container");
-	dom_overlay_container = document.getElementById("dom_overlay_container");
-	var comp=AdobeAn.getComposition("1BC81D22A0FB40289F46CA83C8F8E839");
-	var lib=comp.getLibrary();
-	var loader = new createjs.LoadQueue(false);
-	loader.addEventListener("fileload", function(evt){handleFileLoad(evt,comp)});
-	loader.addEventListener("complete", function(evt){handleComplete(evt,comp)});
-	var lib=comp.getLibrary();
-	loader.loadManifest(lib.properties.manifest);
-}
-function handleFileLoad(evt, comp) {
-	var images=comp.getImages();	
-	if (evt && (evt.item.type == "image")) { images[evt.item.id] = evt.result; }	
-}
-function handleComplete(evt,comp) {
-	//This function is always called, irrespective of the content. You can use the variable "stage" after it is created in token create_stage.
-	var lib=comp.getLibrary();
-	var ss=comp.getSpriteSheet();
-	var queue = evt.target;
-	var ssMetadata = lib.ssMetadata;
-	for(i=0; i<ssMetadata.length; i++) {
-		ss[ssMetadata[i].name] = new createjs.SpriteSheet( {"images": [queue.getResult(ssMetadata[i].name)], "frames": ssMetadata[i].frames} )
-	}
-	exportRoot = new lib.mapa3();
-	stage = new lib.Stage(canvas);
-	stage.enableMouseOver();	
-	//Registers the "tick" event listener.
-	fnStartAnimation = function() {
-		stage.addChild(exportRoot);
-		createjs.Ticker.framerate = lib.properties.fps;
-		createjs.Ticker.addEventListener("tick", stage);
-	}	    
-	//Code to support hidpi screens and responsive scaling.
-	AdobeAn.makeResponsive(true, 'width', false, 1, [canvas, anim_container, dom_overlay_container]);	
-	AdobeAn.compositionLoaded(lib.properties.id);
-	fnStartAnimation();
-}
-</script>
-	</head>
-<body onload="init();" style="margin:0px;">
-	
-	<!-- hlavička -->
-	
-<div class="hlavicka">
-  <div class="logo">
-	  <a href="../index.html">
-		  <img src="../img/logo_therebelsnest.png" width="70%" alt="logo"/>
-	  </a>
-	</div>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Konfederační státy americké (1861–1865) - Interaktivní mapa</title>
+  <style>
+    :root {
+      --bg-color: #C7C7C7;
+      --panel-bg: #DCDCDC;
+      --accent-main: #A02042;
+      --text-main: #464646;
+      --text-muted: #666666;
+      --border-color: #A02042;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Constantia, "Lucida Bright", "DejaVu Serif", Georgia, serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    header {
+      background-color: var(--panel-bg);
+      border-bottom: 2px solid var(--border-color);
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      color: var(--accent-main);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .main-container {
+      display: flex;
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .map-wrapper {
+      flex: 1;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      overflow: auto;
+      background-color: var(--bg-color);
+    }
+
+    .map-container {
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      aspect-ratio: 1920 / 1252;
+      border: none;
+      box-shadow: none;
+      background-color: var(--bg-color);
+    }
+
+    .map-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+    .map-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+    }
+
+    /* Vektorové státy nad podkladem */
+    .st0 {
+      fill: #A02042;
+      fill-opacity: 0.25;
+      stroke: #A02042;
+      stroke-width: 1.5;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .st0:hover {
+      fill-opacity: 0.55;
+      fill: #A02042;
+      stroke: #464646;
+      stroke-width: 2.5;
+    }
+
+    .st0.active {
+      fill: #A02042;
+      fill-opacity: 0.85;
+      stroke: #464646;
+      stroke-width: 3;
+    }
+
+    /* Boční panel s detaily */
+    .info-panel {
+      width: 380px;
+      background-color: var(--panel-bg);
+      border-left: 2px solid var(--border-color);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      overflow-y: auto;
+    }
+
+    .panel-header {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0.8rem;
+    }
+
+    .state-title {
+      font-size: 1.8rem;
+      color: var(--accent-main);
+      margin-bottom: 0.2rem;
+    }
+
+    .state-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .info-group {
+      background-color: rgba(255, 255, 255, 0.4);
+      padding: 0.8rem 1rem;
+      border-radius: 4px;
+      border-left: 4px solid var(--accent-main);
+    }
+
+    .info-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--accent-main);
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.2rem;
+    }
+
+    .info-value {
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--text-main);
+    }
+
+    .description {
+      line-height: 1.5;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
+
+    /* Tooltip */
+    .tooltip {
+      position: absolute;
+      background-color: var(--panel-bg);
+      border: 1.5px solid var(--accent-main);
+      color: var(--text-main);
+      font-weight: bold;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      border-radius: 3px;
+      pointer-events: none;
+      display: none;
+      z-index: 100;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1>Konfederační Státy Americké (1861–1865)</h1>
+      <div class="subtitle">Interaktivní historická mapa</div>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <div class="map-wrapper">
+      <div class="map-container">
+        <!-- Bitmapový podkladový obrázek -->
+        <img src="mapa_konfederace_3.jpg" alt="Podkladová mapa" class="map-image">
+
+        <!-- Vektorová vrstava se státy přesně pasující na podklad -->
+        <svg class="map-overlay" viewBox="0 0 1920 1252">
+          <path class="st0" data-state="texas" id="path-texas" d="M853.57,802.58l-.97-4.21-1.3-7.29h-2.75l-3.89-10.05v-2.92l-1.13-3.08-.81-5.18h-4.86l-4.54-3.56,1.13-11.67-3.4-8.26-6.32-7.62v-98.68l-5.02.16-2.11.49-4.43.74-4.61-1.3-1.44-3.89-1.41-.51-1.97-.71-2.3.07-3.82-2.3-2.88-2.52-2.95-.14-2.45-1.22-.72-1.73-2.66-3.75-3.38-1.3-1.15-2.81-6.99.22-1.08,1.73-3.6,2.59-1.87-.94-2.59.14-1.8-1.15-4.68,1.15-2.16-1.8-2.74-1.44-1.37.43-2.52-.07-1.51,1.73-1.87.22-1.08,1.87-2.49,1.19-7.24-4.21-3.67,3.13-4.43.32-3.02,5.18-4.11-.43-1.73,1.08-1.19,3.35-3.46-.43-1.51-3.56s-4.43-.97-4.75-1.08-6.16-1.84-6.16-1.84l-.65-4.32-5.29-.76-3.02,3.89-2.81.22-1.19-1.84-3.46-1.94-1.84.65-1.51-3.35-2.92-2.27-1.73,1.4-.97,4.11-4,3.72v6.22l-5.62,1.08-.54-3.67.54-2.92-1.3-1.94-5.29-5.4-2.05-.76,1.08,5.51-3.89-.97-1.73,2.85-1.51.49v-1.62l-5.29-3.78-3.02.65-1.73-2.59-4.32-2.81-3.46-.76-.97,5.08h-1.51l-1.62.54-1.73-1.19-2.16.54-4.65-1.84,1.4-3.02-2.81-5.29-4.65-1.62-1.51-4.97-6.16-5.62-4.86-.86-3.35,2.16-3.89.97-2.05-2.05-4.43-1.3-2.27,1.08-7.89-1.73-5.73,1.51-1.94-.65-.97-3.02s-2.81-1.4-3.24-1.4-9.29.43-9.29.43l-2.05-5.4s-4.11-1.4-4.65-1.62c-.54-.22-3.46-6.59-3.46-6.59l-3.13-1.51-3.56.32-2.16-.32-3.89,1.08-6.37-.11-4.21-1.84-3.02-.32-3.65-4-5.4-1.05,5.4-125.4-154.46-9.97-20.35,288.58-120.83-9.55-73.97-6.78-.65,7.13.71,5.88h0s6.9,1.09,6.9,1.09l3.56,7.78,13.61,14.26,11.67,15.88s11.67,16.53,12.96,18.47,11.34,11.67,11.34,11.67l14.91,9.72,9.4,20.09,5.51,21.71,2.59,17.18s9.4,9.72,9.72,10.69c.32.97,15.23,6.48,15.23,6.48l4.54,7.78,18.47,10.69,21.39,16.85,11.67,3.24,4.54-4.54,8.1-8.75,11.99-17.18,4.86-9.4,11.34-10.05s8.1,3.56,9.07,3.89c.97.32,8.75-.32,8.75-.32l16.85.32,8.43,2.92,10.37-.97,12.31,7.78,7.99,8.43,6.48,6.48,7.99,8.43,5.4,6.27,8.86,15.77-1.08,3.02,3.67,8.86,6.02,14.47,6.51,5.18v6.27l4.11,9.94,6.05,4.54,12.31,14.26.86,7.56,3.46,6.48,8.64,6.91,9.51,6.91s1.08,7.13,1.08,8.21-2.59,8.21-2.59,8.21l5.83,7.13-2.38,8.21,6.7,12.75,6.05,5.62s3.02,8.64,3.02,9.29,2.81,7.56,2.81,7.56l1.3,7.13,10.59,1.51,2.38-1.73h6.7l1.73,7.99,7.56,2.38,7.56.65,7.56,9.94s6.91.43,7.99.43,14.47-.22,15.12-.22,11.02,3.02,11.02,3.02c0,0,7.78,3.24,7.99,4.11s9.72,7.99,9.72,7.99l6.05-4.32,9.94,1.51-1.08-14.26-.65-9.51-.65-13.18v-11.23s-1.08-26.36-1.51-27.22c-.43-.86-.86-26.57-.86-26.57l1.51-4.75,2.59-5.62,6.48-8.21,4.11-7.13,2.75-4.27,4.7-5.67,10.53-8.43s11.83-7.78,13.13-8.59c1.3-.81,5.02-6.16,5.02-6.16l21.55-11.99s18.31-9.24,19.12-9.56c.81-.32,12.15-8.59,12.15-8.59l8.91-6.32,6.16-6.16,14.42-8.91,3.56-7.29,5.18-3.24,15.39-8.43,17.5-6.8s7.29-.97,7.94-.97c.44,0,2.54-1.21,3.83-1.97.6-.36,1.03-.62,1.03-.62l-1.13-1.94-3.24-5.67,3.24-7.45,4.21-1.46,2.27-5.83.65-3.56-1.3-2.59-3.56-9.72.97-3.08-.97-4.86-.49-5.99,3.89-6.16,2.27-1.3,1.13-2.59-.32-3.56,3.08-11.99,1.13-4.54Z"/>
+          <path class="st0" data-state="louisiana" id="path-louisiana" d="M1096.39,909.44c-.54,0-7.91-8.27-7.91-8.27l-10.06-5.03,1.62-2.7-5.57-3.41-2.52-5.39s4.67.54,7.73.9c3.06.36,1.62-4.85,1.62-4.85l5.93-1.62,2.34-1.08-7.91-6.83,6.29-1.8,7.19,2.7,1.26-18.69-3.59-1.26s-7.19,3.23-8.99,3.95c-1.8.72-5.75-1.26-6.29-1.26s-3.59,4.67-3.59,4.67l-1.26,6.83-10.78-1.08-11.5-3.06,7.37-5.39,6.83-7.91h6.47l.72-1.08.11-.47.79-3.3v-5.75s-2.16-3.23-2.88-3.77c-.72-.54-3.06-5.03-3.06-5.03,0,0-3.95-1.98-4.49-2.52s-3.77-7.55-3.77-7.55c0,0-.72-5.75-1.44-6.65-.72-.9,2.16-8.45,2.16-8.45l1.62-7.01-39.54,1.08-25.64.9h-29.35l-3.41-1.62-3.06-2.34.18-10.78s4.31-1.62,4.67-1.71c.36-.09-.99-5.84-.99-5.84l4.31-2.7-3.23-5.12,4.04-2.7v-5.12l4.31-6.2,4.85-2.43-3.77-3.23,5.93-5.39,8.36-9.17-.54-6.74h-5.12l.81-4.04h6.47l4.04-2.16,5.12-8.9h-5.39l-2.43-4.31-4.31-3.5,1.89-2.43v-5.93l-5.39-2.97,3.23-3.5-3.5-3.5,2.16-6.2.54-5.66-5.93-2.43-33.32.44-47.82.64h-4.31l-2.97.81-66.97-1.3v65.48l6.32,7.62,3.4,8.26-1.13,11.67,4.54,3.56h4.86l.81,5.18,1.13,3.08v2.92l3.89,10.05h2.75l1.3,7.29.97,4.21-1.13,4.54-3.08,11.99.32,3.56-1.13,2.59-2.27,1.3-3.89,6.16.49,5.99.97,4.86-.97,3.08,3.56,9.72,1.3,2.59-.65,3.56-2.27,5.83-4.21,1.46-3.24,7.45,3.24,5.67,1.13,1.94s-.43.26-1.03.62l3.9.03s5.21-1.26,6.11-1.26,9.35.72,9.35.72l7.91-1.26,5.93-1.98s6.11.36,7.01.54c.9.18,5.75,2.88,6.47,3.41.72.54,10.06,5.57,13.12,7.01,3.06,1.44,7.19,3.06,7.19,3.06l12.22.9s11.32-4.13,11.86-4.13,4.31,1.98,4.31,1.98c0,0,6.29,1.26,7.01,1.44.72.18,4.67-1.26,4.67-1.26l4.49,1.8,2.7.18.18-2.16,4.31-2.88,1.39-5.39,3.47-.18,2.7,7.37,3.41-1.8,4.31,2.16,7.55,4.13,6.83,3.23-1.62,1.8-5.75,1.98-4.31,2.7s9.88,3.41,11.5,3.77c1.62.36,3.06-1.62,3.06-1.62l3.06,3.06,4.85,1.08,5.03.36,5.39,3.59,5.57,3.23-7.01,2.52,11.86,1.98,10.78-4.49s-10.6-.54-11.14-.72c-.54-.18,4.13-5.21,4.13-5.21l-.54-7.73s5.75.36,6.65.18c.9-.18,4.31,7.91,4.31,7.91h4.85l4.13-5.93,3.77,3.95-1.8,5.93,3.06.9s6.47-6.29,7.01-6.65c.54-.36,4.67-5.57,4.67-5.57l-4.31-.54.18-4.67-.18-5.21,4.13-.36,3.41-3.41,3.06,4.31-.36,7.01s7.37-5.03,7.73-5.57,2.52,11.32,2.52,11.32c0,0,5.75-2.88,6.29-3.06s-5.03-4.31-5.03-4.31c0,0,1.98-.72,3.95-1.08,1.98-.36,3.41,3.06,3.41,3.06,0,0,6.47,4.85,6.65,5.39.18.54-2.52,10.96-3.06,11.5s16.71-7.01,16.71-7.01v-7.55s-8.81,1.44-9.35,1.44Z"/>
+          <path class="st0" data-state="arkansas" id="path-arkansas" d="M1051.28,481.19l-2.3-3.65-.76-1.2-34.15,1.71,5.39-9.17s4.31-2.43,5.93-2.97,3.23-5.39,3.23-5.39v-7.55l-5.39-9.17-18.18.69-81.83,3.09-130.74,5.39,8.63,55.53-.81,6.2,2.16,1.89,1.08,10.51,2.16,108.64h0s1.41.52,1.41.52l1.44,3.89,4.61,1.3,4.43-.74,2.11-.49,5.02-.16v33.19l66.97,1.3,2.97-.81h4.31l47.82-.64,33.32-.44-.54-8.09,5.39-6.2-3.77-1.89-1.35-4.85,2.7-5.12-7.82-3.5,1.62-7.01,4.85-8.63.27-16.98,6.47-2.43-1.35-7.01,5.39-2.7-3.77-3.5,4.58-2.7,4.04-7.55,7.28-2.43-.27-15.37,6.2-1.62-4.85-5.66s1.79-.56,3.35-.96c.87-.22,1.66-.39,2.05-.39,1.08,0-1.08-5.12-1.08-5.12h4.31l4.85-8.36,3.13-3.13,3.07-3.07h2.7l3.77-2.7-6.83-12.13.54-7.73,8.99-8.63,6.11-8.45-5.75-4.85,16.89-12.76Z"/>
+          <path class="st0" data-state="missouri" id="path-missouri" d="M1069.27,407.38c-.96-.82-1.74-1.43-2.09-1.57-1.33-.53-5.34,3.2-5.34,3.2l-4-5.34-2.4-10.68s2.4-4,2.4-5.07-4.54-11.21-4.54-11.21l-2.02-6.41-8.66-4.8v-2.67l-5.6-4.8-7.74-.27-3.2-6.14-7.93-6.14-9.15-5.6-1.87-8.01,2.14-7.47.53-5.64,4.27-7.7,4-10.94s.8-3.74-2.94-5.6c-3.74-1.87-12.81-3.2-12.81-3.2l-7.74,6.14-4.54-5.87-1.33-8.81-1.6-6.67-2.67-8.01-11.48-7.47-4.54-6.67-10.14-9.34-2.14-5.07s-3.47-5.87-4.27-6.94c-.8-1.07,0-5.87,0-6.67s-2.67-9.61-2.67-9.61l-3.74-8.81,3.74-10.41s-11.21-1.07-12.01-1.33c-.8-.27-4.27-11.21-4.27-11.21l-107.29,5.07-46.97,2.94-15.89,1.07-30.29-1.07,1.24,3.25h2.7v4.04l2.7,3.77-2.7,5.93,7.82,2.7,4.04,10.24,8.63,6.47,6.2,7.01h6.2l4.04,2.97.81,5.66-2.16,14.83s2.16,9.97,2.16,10.78,4.31,8.36,4.31,8.36l5.93,2.16,6.47,5.3,1.62,50.86.28,53.91.28,45.65-.57,16.53,130.74-5.39,81.83-3.09,18.18-.69,5.39,9.17v7.55s-1.62,4.85-3.23,5.39-5.93,2.97-5.93,2.97l-5.39,9.17,34.15-1.71.76,1.2,2.3-8.47-1.45-5.34,2.67-2.4,1.07-3.74.8-6.94,1.33-6.84.27-7.31,4.8,7.31,3.69-6.99.31-.59,7.74,3.47s1.33-5.07,1.33-6.14c0-.88,1.65-6.9,2.21-8.93.12-.42.19-.67.19-.67v-10.14s-4.24-4.09-6.99-6.44Z"/>
+          <path class="st0" data-state="mississippi" id="path-mississippi" d="M1137,547.59v-4.85s-6.2-5.66-7.01-5.93c-.34-.11-11.45.5-24.12,1.24-17.22,1.01-37.34,2.26-37.34,2.26l-18.33,2.43h-19.68l-8.73-1.25-3.13,3.13-4.85,8.36h-4.31s2.16,5.12,1.08,5.12c-.38,0-1.18.17-2.05.39-1.56.4-3.35.96-3.35.96l4.85,5.66-6.2,1.62.27,15.37-7.28,2.43-4.04,7.55-4.58,2.7,3.77,3.5-5.39,2.7,1.35,7.01-6.47,2.43-.27,16.98-4.85,8.63-1.62,7.01,7.82,3.5-2.7,5.12,1.35,4.85,3.77,1.89-5.39,6.2.54,8.09,5.93,2.43-.54,5.66-2.16,6.2,3.5,3.5-3.23,3.5,5.39,2.97v5.93l-1.89,2.43,4.31,3.5,2.43,4.31h5.39l-5.12,8.9-4.04,2.16h-6.47l-.81,4.04h5.12l.54,6.74-8.36,9.17-5.93,5.39,3.77,3.23-4.85,2.43-4.31,6.2v5.12l-4.04,2.7,3.23,5.12-4.31,2.7s1.35,5.75.99,5.84c-.36.09-4.67,1.71-4.67,1.71l-.18,10.78,3.06,2.34,3.41,1.62h29.35l25.64-.9,39.54-1.08-1.62,7.01s-2.88,7.55-2.16,8.45c.72.9,1.44,6.65,1.44,6.65,0,0,3.23,7.01,3.77,7.55s4.49,2.52,4.49,2.52c0,0,2.34,4.49,3.06,5.03.72.54,2.88,3.77,2.88,3.77v5.75l-.79,3.3,3.39,1.37h3.77l1.89-3.77,2.7-3.23,1.62-4.85,3.77,2.43h3.5l9.17-4.31,1.35,8.09,10.78-2.16s-3.23-7.82-3.77-8.9,10.24,4.31,10.24,4.31l5.39-1.62,6.74,1.62h2.16l2.43-3.77-.09-.75-8.26-66.91-2.7-30.46,5.12-89.23,5.93-97.58Z"/>
+          <path class="st0" data-state="florida" id="path-florida" d="M1626.5,1052.51l-2.44-15.7-4.19-24.07-21.98-39.42s-15.7-30.35-16.4-33.49c-.7-3.14-2.09-21.63-2.09-21.63l2.44-4.54-5.58-9.42-11.16-15.35-12.56-12.56-12.91-17.09s-13.61-25.47-15-28.61c-1.4-3.14-6.28-23.02-6.28-23.02l-3.49-17.09-1.74-5.23-1.6-4.87h-10.42s-12.58-4.67-12.94-3.59-6.11,6.11-6.11,6.11l3.23,9.35-1.44,14.74h-6.11l-6.11-12.22-22.28-.72-30.55,1.8-14.74-2.16s-11.14-.72-12.22-.36c-1.08.36-6.11,2.52-6.11,2.52l-40.26,3.23-12.58.36-6.83-5.03v-6.83l-4.94-7.91-29.88,1.89-6.81.44-72.49,4.68-20.13,2.34-12.76,1.08s-.18,4.31,0,5.75c.18,1.44,1.62,7.91,1.62,7.91l8.81,6.83,2.52,3.95-3.23,5.57s4.13,4.67,4.31,5.21-3.77,4.49-3.77,4.49l-.09.14,5.76,3.45,5.93-2.44,17.79-4.88h11.16l6.63-2.79,6.28-3.14,6.28,4.54,13.26,4.54s12.91,5.58,14.65,6.63c1.74,1.05,15.35,6.98,15.35,6.98l13.26,9.07,4.19,5.93-1.4,7.67,10.12,1.74h9.42l4.88-8.37s9.07-1.74,10.12-2.44c1.05-.7,12.21-7.75,12.21-7.75,0,0,10.47-.07,10.47,0s-2.79-7.73-2.79-7.73l5.23-6.85,11.51.35s5.23,4.19,6.63,4.19h6.98c1.4,0,8.72,7.33,8.72,7.33,0,0,8.72,9.42,10.81,10.12s6.63,3.14,6.63,3.14v8.02l7.33,6.28s10.47,13.26,11.51,13.26h11.16l1.4,7.33,2.44,6.63,1.05,9.77,2.79,16.4,2.79,7.67-1.4,10.12-3.84,5.23-2.79,12.56s1.74,10.81,3.49,12.21c1.74,1.4,7.67,8.72,7.67,8.72l5.23,7.67-4.88,6.28,6.63,3.49,9.77,13.61,4.19,10.12,7.33,7.67h4.88l4.19-3.84s4.19-.7,4.88.35,2.09,9.42,2.09,9.42l-4.19,5.58,1.4,8.37,5.58,4.19,10.12-4.19,1.74,10.47s-3.84,7.33-3.49,8.72c.35,1.4,2.44,9.42,2.44,9.42l11.16,3.14,11.16,7.33,11.16,13.26,5.58,10.12,10.47,8.37-6.63,4.54,1.05,5.93s8.37,4.54,9.77,3.84c1.4-.7,15.7-6.28,17.09-7.67,1.4-1.4,12.21-4.88,12.21-4.88,0,0,4.88,4.88,4.88,5.93s-3.49,10.81-4.54,11.16c-1.05.35-43.96,22.33-43.96,22.33l-12.56-1.4.7,8.02,15-2.44s30.35-14.65,34.19-16.75c3.84-2.09,11.16-9.42,11.16-9.42l8.02-12.56s3.84-12.91,4.88-14.65c1.05-1.74,4.88-18.49,4.88-18.49,0,0-2.09-26.16-2.09-27.91s2.09-16.05,2.09-16.05Z"/>
+          <path class="st0" data-state="alabama" id="path-alabama" d="M1316,769.99l-1.35-4.85-.27-9.17,1.08-8.9s1.35-4.58.54-5.39c-.81-.81-3.5-6.2-3.5-6.2,0,0-1.89-8.09-2.97-9.17s.81-4.04.81-4.04l3.23-5.39s-.54-7.01-.81-7.82c-.27-.81,4.85-7.28,4.85-7.28v-5.12s-1.08-2.97-1.89-3.92,1.89-4.98,1.89-5.79-3.5-5.93-3.5-5.93l-5.12-5.39-2.43-6.47-6.74-17.79-10.78-39.54-10.78-39.54-11.26-46.55-12.62,1.21-1.46.14-35.58,3.23-30.19,2.97-34.24,2.16-18.06,1.33h-4.85c.81.28,7.01,5.94,7.01,5.94v4.85l-5.93,97.58-5.12,89.23,2.7,30.46,8.26,66.91,1.17.03,3.06.36,5.75.9,3.06,2.52,3.41-1.62v-11.68c0-.54,2.34-10.06,1.44-11.68-.9-1.62,6.11.54,6.11.54,0,0,1.26,6.11,1.44,6.83.18.72.36,9.17.36,9.88s11.32,8.27,11.32,8.27l-15.46,4.85s14.02-.72,14.56-.72,9.52-1.62,9.52-1.62l3.95-2.34h-4.67l1.44-2.7,4.67-1.8,1.17-1.84.09-.14s3.95-3.95,3.77-4.49-4.31-5.21-4.31-5.21l3.23-5.57-2.52-3.95-8.81-6.83s-1.44-6.47-1.62-7.91c-.18-1.44,0-5.75,0-5.75l12.76-1.08,20.13-2.34,72.49-4.68,6.81-.44,29.88-1.89-5.12-9.7Z"/>
+          <path class="st0" data-state="georgia" id="path-georgia" d="M1572.99,502.21l-55.71,5.39s-.36-7.91-1.8-8.63c-1.44-.72-8.63-6.11-8.63-6.11h-6.47l-3.59-2.52-35.22,3.23-27.32,2.16-12.94,7.19s-11.86,5.03-13.3,5.75c-1.44.72-10.06,3.23-10.06,3.23l-3.54.33.67,4.35-5.03,6.11-6.47,6.11,8.63,4.31,4.31,1.8,9.35,7.82,8.63,1.53,4.67,10.78,4.79,7.67,2.85,4.56,6.74,5.03,11.5,7.55,6.11,7.55,9.35,8.99,5.75,3.59,5.75,10.42,5.75,5.03,5.39,8.27,11.86,2.53,6.47,13.29,2.52,9.7,3.59,4.31,7.91,8.27,3.23,17.61,3.95,7.91h7.91l6.47-3.96h3.59l3.95-6.11s3.95-5.39,5.03-6.47,5.39-7.55,5.39-7.55c0,0-2.16-7.19,0-7.55,2.16-.36,5.75-1.44,6.83-1.8s9.35-7.55,9.35-7.55l7.19-2.88,5.75-9.7,7.91-7.54,3.59-4.68,8.27-8.63,7.19-9.7,3.95-7.55v-9.7l8.27-16.89,5.03-5.75,12.58-10.78-67.93-50.32Z"/>
+          <path class="st0" data-state="south-carolina" id="path-south-carolina" d="M1530.58,687.32h-7.91l-3.95-7.91-3.23-17.61-7.91-8.27-3.59-4.31-2.52-9.7-6.47-13.29-11.86-2.53-5.39-8.27-5.75-5.03-5.75-10.42-5.75-3.59-9.35-8.99-6.11-7.55-11.5-7.55-6.74-5.03-2.85-4.56-4.79-7.67-4.67-10.78-8.63-1.53-9.35-7.82-4.31-1.8-8.63-4.31,6.47-6.11,5.03-6.11-.67-4.35-.05-.33-22.28,3.95-22.28,1.8-11.86.72-19.77,1.8-5.14.72-1.6,1.34h-8.09l-13.9,1.34-22.43,2.16,11.26,46.55,10.78,39.54,10.78,39.54,6.74,17.79,2.43,6.47,5.12,5.39s3.5,5.12,3.5,5.93-2.7,4.84-1.89,5.79,1.89,3.92,1.89,3.92v5.12s-5.12,6.47-4.85,7.28c.27.81.81,7.82.81,7.82l-3.23,5.39s-1.89,2.97-.81,4.04,2.97,9.17,2.97,9.17c0,0,2.7,5.39,3.5,6.2.81.81-.54,5.39-.54,5.39l-1.08,8.9.27,9.17,1.35,4.85,5.12,9.7,4.94,7.91v6.83l6.83,5.03,12.58-.36,40.26-3.23s5.03-2.16,6.11-2.52c1.08-.36,12.22.36,12.22.36l14.74,2.16,30.55-1.8,22.28.72,6.11,12.22h6.11l1.44-14.74-3.23-9.35s5.75-5.03,6.11-6.11,12.94,3.59,12.94,3.59h10.42v-9.7l3.23-6.11-3.59-3.95,3.59-4.67,4.67-18.33,2.52-12.58v-12.58l2.16-4.67,4.67-5.03v-5.75l5.03-4.31v-3.23l-3.23-2.16Z"/>
+          <path class="st0" data-state="north-carolina" id="path-north-carolina" d="M1396.06,304.71l1.62,5.93,10.78,12.67,3.5,8.63,7.28,5.66,7.55,5.66-8.9,8.36-14.29,14.83-5.39,12.67-4.85,5.66-5.39,4.31-7.82,8.9-13.21,7.01-10.24,6.74,61.73-8.85,30.84-2.8h0s2.27-.14,5.19-.29c4.97-.25,11.81-.53,12.49-.19,1.08.54,45.29-6.29,45.29-6.29l59.66-7.55,48.16-8.27,51.4-8.27,53.55-10.06,16.89-3.59,6.45,1.94-1.78-9.48-6.83-11.86-4.67-7.91.72-9.7-1.8-17.25,10.78-3.59.36-5.75-1.44-11.14,5.39-12.94,5.03-14.74h-8.27l-4.67,4.31-11.5,3.23-9.35,5.03-8.99,3.23-8.99-1.44-10.42-5.75-13.3-7.46s-6.11.27-7.91,0c-1.8-.27-3.95-2.61-3.95-2.61l-12.58-2.52-1.8-10.42,3.59-6.83,5.03-10.78-3.95-8.63s-5.75-4.31-8.99-6.11c-3.23-1.8-10.42-2.88-10.42-2.88v-2.52l-3.95-6.83s-11.5-1.44-15.1-2.52c-3.59-1.08-8.27-4.67-8.27-4.67l-1.8-7.55-7.91-6.11-6.47,3.95-6.83,2.88-6.47,7.55-6.83-.36-6.11-7.55-4.31,5.75-4.31,6.83s-8.63,7.91-8.63,8.99-11.14,2.16-11.14,2.16l-2.52,10.6-5.39-34.68-10.78,1.08-39.54,7.55-10.06-55.71h-2.16l-5.75,3.59,3.95,8.99s.72,6.83,0,7.91c-.72,1.08,0,10.78,0,10.78v16.53l-4.67,9.35s.72,7.55,0,8.99c-.72,1.44-6.47,9.7-6.47,9.7l-3.23,6.47-9.35,5.39-8.27-3.23s-3.23,7.55-3.59,8.63-4.67,4.67-4.94,6.11-1.89,10.42-1.89,10.42l1.89,6.83s-4.04,3.23-5.84,5.48-5.75-9.44-5.75-9.44c0,0-4.31,9.35-3.95,11.14s-2.52,5.39-2.52,5.39l2.52,11.5-5.39,1.8s1.08,6.11,0,7.91-6.47,4.67-6.47,4.67l-2.91,2.79,1.2,6.01-1.62,8.63Z"/>
+          <path class="st0" data-state="virginia" id="path-virginia" d="M1419.24,337.6l-7.28-5.66-3.5-8.63-10.78-12.67-1.62-5.93,1.62-8.63-1.2-6.01-.15-.73s-8.09-7.82-9.17-8.09c-1.08-.27-9.44-3.23-9.44-3.23l-2.16-8.9-4.31,1.89s-5.66,5.66-6.47,6.2c-.81.54-7.82,1.08-7.82,1.08,0,0-11.59-3.77-12.94-3.77s-2.7,3.23-3.5,3.77c-.81.54-6.47-1.08-6.47-1.08,0,0-7.82-5.39-8.63-5.39s-6.74,1.89-6.74,1.89c0,0-7.28-.81-8.36-.81s-2.43-7.55-2.43-7.55l-5.93-5.12-9.97-3.23-11.32-2.7-6.74,7.28,2.7,6.74,2.16,4.31v7.55l-6.47,1.35-5.12,5.39-8.63-1.62-9.17,1.89,2.97,8.9-1.62,5.66-7.82,2.7-1.89,11.32h-6.74l-4.04,6.47v9.06l-7.82,4.15s-7.55-1.35-8.36-1.35-5.93-8.9-5.93-8.9l-8.36,7.82v6.47s-3.77,5.12-4.85,5.66c-1.08.54-9.17-5.66-9.17-5.66l-9.97,5.39-1.35,5.39-2.7,2.43-7.28-3.23-11.05-4.58-6.47,7.01-4.85-3.5h-11.32l1.35,7.01-4.58,2.7-10.24,8.63,4.31,11.05-18.06,4.58v7.28l6.2,10.51s-5.93,4.85-6.74,4.85-12.4-4.31-12.4-4.31l-11.86-5.39-6.2,8.09-3.31,4c2.74,2.34,6.99,6.44,6.99,6.44v10.14s-.07.25-.19.67c-.56,2.03-2.21,8.05-2.21,8.93,0,1.07-1.33,6.14-1.33,6.14l-7.74-3.47-.31.59,1.91,5.37h14.83l29.11-1.08,19.68-1.35,2.16-7.28,32.35-2.97,5.66,2.97,6.47-2.97,46.91-3.5s5.93-.81,6.74-1.35c.81-.54,12.13,1.35,12.13,1.35l16.98-2.7,35.31-4.58,32.47-3.67,29.53-3.34,10.24-6.74,13.21-7.01,7.82-8.9,5.39-4.31,4.85-5.66,5.39-12.67,14.29-14.83,8.9-8.36-7.55-5.66Z"/>
+          <path class="st0" data-state="tennessee" id="path-tennessee" d="M1782.89,423.5l-1.44-13.66-4.67-9.7-5.39-7.91s-6.11-7.55-6.83-8.63c-.72-1.08-7.55-8.63-7.55-9.7s-5.39-11.14-5.39-11.14l-2.52-5.03-.74-.22-6.45-1.94-16.89,3.59-53.55,10.06-51.4,8.27-48.16,8.27-59.66,7.55s-44.21,6.83-45.29,6.29c-.68-.34-7.52-.06-12.49.19l-3.14,6.55s-.54,5.39.81,6.74c1.35,1.35,1.08,6.47,1.08,6.47h-5.12l-5.17,9.74-1.84,3.47-10.78,3.77-6.2,2.16-2.43,6.74-3.23,3.23-8.9-3.23-3.77,5.66-6.11,6.47-11.14,7.28-3.23,4.58-7.28,6.2-7.28,4.04s-8.09,1.08-9.17,1.08-7.28,1.35-7.28,1.35l-2.97,7.82-2.7,7.82-2.16,4.04-9.97,2.16v9.97l-2.7,2.43-17.25,1.62-3.53,2.97,5.14-.72,19.77-1.8,11.86-.72,22.28-1.8,22.28-3.95.05.33,3.54-.33s8.63-2.52,10.06-3.23c1.44-.72,13.3-5.75,13.3-5.75l12.94-7.19,27.32-2.16,35.22-3.23,3.59,2.52h6.47s7.19,5.39,8.63,6.11c1.44.72,1.8,8.63,1.8,8.63l55.71-5.39,67.93,50.32,7.19-1.44,8.63-3.23s8.27,1.08,9.35,0,6.11,0,6.11,0l1.8-11.14v-8.99l5.39-11.86s11.14-11.86,12.22-12.58c1.08-.72,9.7-8.99,9.7-8.99l6.11-7.55,11.14-4.31,15.1-2.88s2.88,8.27,5.03,7.19,7.55-14.74,7.55-14.74l10.78-19.05,6.47-7.19,9.7-3.95s9.35-3.95,9.7-5.39,0-12.94,0-12.94Z"/>
+          <path class="st0" data-state="kentucky" id="path-kentucky" d="M1451.32,406.34l3.14-6.55c-2.92.15-5.19.29-5.19.29h0l-30.84,2.8-61.73,8.85-29.53,3.34-32.47,3.67-35.31,4.58-16.98,2.7s-11.32-1.89-12.13-1.35c-.81.54-6.74,1.35-6.74,1.35l-46.91,3.5-6.47,2.97-5.66-2.97-32.35,2.97-2.16,7.28-19.68,1.35-29.11,1.08h-14.83l-1.91-5.37-3.69,6.99-4.8-7.31-.27,7.31-1.33,6.84-.8,6.94-1.07,3.74-2.67,2.4,1.45,5.34-2.3,8.47,2.3,3.65-16.89,12.76,5.75,4.85-6.11,8.45-8.99,8.63-.54,7.73,6.83,12.13-3.77,2.7h-2.7l-3.07,3.07,8.73,1.25h19.68l18.33-2.43s20.12-1.25,37.34-2.26c12.68-.74,23.78-1.36,24.12-1.24h4.85s18.06-1.35,18.06-1.35l34.24-2.16,30.19-2.97,35.58-3.23,1.46-.14,12.62-1.21,22.43-2.16,13.9-1.34h8.09l1.6-1.34,3.53-2.97,17.25-1.62,2.7-2.43v-9.97l9.97-2.16,2.16-4.04,2.7-7.82,2.97-7.82s6.2-1.35,7.28-1.35,9.17-1.08,9.17-1.08l7.28-4.04,7.28-6.2,3.23-4.58,11.14-7.28,6.11-6.47,3.77-5.66,8.9,3.23,3.23-3.23,2.43-6.74,6.2-2.16,10.78-3.77,1.84-3.47,5.17-9.74h5.12s.27-5.12-1.08-6.47c-1.35-1.35-.81-6.74-.81-6.74Z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Pravý informační panel -->
+    <div class="info-panel" id="infoPanel">
+      <div class="panel-header">
+        <h2 class="state-title" id="stateName">Texas</h2>
+        <div class="state-subtitle" id="stateSecession">Secese: 1. února 1861 (7. stát)</div>
+      </div>
+
+      <div class="info-group">
+        <div class="info-label">Hlavní město</div>
+        <div class="info-value" id="stateCapital">Austin</div>
+      </div>
+
+      <div class="info-group">
+        <div class="info-label">Klíčové bitvy</div>
+        <div class="info-value" id="stateBattles">Bitva o Galveston, Bitva u Sabine Pass</div>
+      </div>
+
+      <div class="info-group">
+        <div class="info-label">Významné osobnosti</div>
+        <div class="info-value" id="statePeople">Albert Sidney Johnston, John Bell Hood</div>
+      </div>
+
+      <div class="description" id="stateDesc">
+        Texas vyhlásil secesi 1. února 1861 a připojil se ke Konfederaci jako 7. stát. Sloužil jako klíčový dodavatel zásob, koní a vojáků pro západní bojiště a poskytoval důležitou obchodní cestu přes bavlnu do Mexika mimo blokádu Unie.
+      </div>
+    </div>
   </div>
-	
-	<!-- obsah -->
 
-<div class="container_obsah_full">
+  <div class="tooltip" id="tooltip"></div>
 
-<div id="animation_container">
-		<canvas id="canvas" style="position: absolute; display: block;"></canvas>
-		<div id="dom_overlay_container" style="pointer-events:none; overflow:hidden; display: block;">
-		</div>
-</div>
-</div>
-		
+  <script>
+    const stateData = {
+      texas: {
+        name: "Texas",
+        secession: "Secese: 1. února 1861 (7. stát)",
+        capital: "Austin",
+        battles: "Bitva o Galveston, Bitva u Sabine Pass",
+        people: "Albert Sidney Johnston, John Bell Hood",
+        desc: "Texas vyhlásil secesi 1. února 1861 a připojil se ke Konfederaci jako 7. stát. Sloužil jako klíčový dodavatel zásob, koní a vojáků pro západní bojiště a poskytoval důležitou obchodní cestu přes bavlnu do Mexika mimo blokádu Unie."
+      },
+      louisiana: {
+        name: "Louisiana",
+        secession: "Secese: 26. ledna 1861 (6. stát)",
+        capital: "Baton Rouge (New Orleans)",
+        battles: "Obléhání Port Hudson, Bitva u Mansfieldu",
+        people: "P. G. T. Beauregard, Richard Taylor",
+        desc: "Louisiana vystoupila z Unie koncem ledna 1861. Kontrola nad přístavem New Orleans a řekou Mississippi učinila z tohoto státu prvořadý strategický cíl pro síly Unie."
+      },
+      arkansas: {
+        name: "Arkansas",
+        secession: "Secese: 6. května 1861 (9. stát)",
+        capital: "Little Rock",
+        battles: "Bitva u Pea Ridge, Bitva o Prairie Grove",
+        people: "Thomas C. Hindman, Patrick Cleburne",
+        desc: "Arkansas zpočátku hlasoval proti secesi, ale po vypuknutí bojů u Fort Sumter a požadavku prezidenta Lincolna na vojáky se 6. května 1861 připojil ke Konfederaci."
+      },
+      missouri: {
+        name: "Missouri",
+        secession: "Hraniční stát (Rozdělená loajalita)",
+        capital: "Jefferson City",
+        battles: "Bitva u Wilson's Creek, Bitva u Lexingtonu",
+        people: "Sterling Price, Francis P. Blair ml.",
+        desc: "Missouri zůstalo oficiálně v Unii, ale v úvodu války zde probíhal prudký vnitřní konflikt a ozbrojený boj mezi stoupenci Jihu a Severu, přičemž exilová vláda vyhlásila secesi."
+      },
+      mississippi: {
+        name: "Mississippi",
+        secession: "Secese: 9. ledna 1861 (2. stát)",
+        capital: "Jackson",
+        battles: "Obléhání Vicksburgu, Bitva u Corinthu",
+        people: "Jefferson Davis, John C. Pemberton",
+        desc: "Mississippi bylo druhým státem, který vystoupil z Unie. Jeho zástupce Jefferson Davis se stal jediným prezidentem Konfederace. Ztráta Vicksburgu v roce 1863 zlomila Jihu vaz."
+      },
+      florida: {
+        name: "Florida",
+        secession: "Secese: 10. ledna 1861 (3. stát)",
+        capital: "Tallahassee",
+        battles: "Bitva u Olustee",
+        people: "Joseph Finegan, John Milton",
+        desc: "Florida se připojila ke Konfederaci jako třetí stát. Během války sloužila především jako zdroj dobytka, soli a zemědělských plodin pro konfederační armádu."
+      },
+      alabama: {
+        name: "Alabama",
+        secession: "Secese: 11. ledna 1861 (4. stát)",
+        capital: "Montgomery (později Richmond)",
+        battles: "Bitva v Mobile Bay, Bitva o Selma",
+        people: "Raphael Semmes, William L. Yancey",
+        desc: "Montgomery v Alabamě bylo původním hlavním městem Konfederace, kde byla sepsána její ústava. Stát byl klíčovým průmyslovým a železničním uzlem Jihu."
+      },
+      georgia: {
+        name: "Georgia",
+        secession: "Secese: 19. ledna 1861 (5. stát)",
+        capital: "Milledgeville (Atlanta)",
+        battles: "Atlanta tažení, Shermanův pochod k moři",
+        people: "Joseph E. Brown, John Brown Gordon",
+        desc: "Georgia byla ekonomickým a strategickým srdcem Konfederace. Pád Atlanty a následný Shermanův pochod k moři v roce 1864 zásadně podlomily morálku a kapacity Jihu."
+      },
+      "south-carolina": {
+        name: "Jižní Karolína (South Carolina)",
+        secession: "Secese: 20. prosince 1860 (1. stát)",
+        capital: "Columbia",
+        battles: "Útok na Fort Sumter, Bitva o Charleston",
+        people: "P. G. T. Beauregard, Francis Marion (historická)",
+        desc: "Jižní Karolína byla prvním státem, který vystoupil z Unie. Právě zde, útokem na pevnost Fort Sumter v přístavu Charleston, vypukla v dubnu 1861 samotná občanská válka."
+      },
+      "north-carolina": {
+        name: "Severní Karolína (North Carolina)",
+        secession: "Secese: 20. května 1861 (10. stát)",
+        capital: "Raleigh",
+        battles: "Bitva u Bentonvillu, Pevnost Fisher",
+        people: "Zebulon Baird Vance, Daniel Harvey Hill",
+        desc: "Severní Karolína vstoupila do Konfederace jako poslední z hluboce jižních států. Poskytla obrovské množství vojáků a přes její pobřeží proudily klíčové pašované zásoby z Evropy."
+      },
+      virginia: {
+        name: "Virginie (Virginia)",
+        secession: "Secese: 17. dubna 1861 (8. stát)",
+        capital: "Richmond",
+        battles: "Bitva u Bull Runu, Bitva u Gettysburgu (operace), Sedmidenní bitvy",
+        people: "Robert E. Lee, Stonewall Jackson",
+        desc: "Virginie se stala hlavním bojištěm války a jejím hlavním městem byl zvolen Richmond. Zrodila se zde nejvýznamnější jména velitelů Jihu v čele s generálem Robertem E. Leem."
+      },
+      tennessee: {
+        name: "Tennessee",
+        secession: "Secese: 8. června 1861 (11. stát)",
+        capital: "Nashville",
+        battles: "Bitva u Shiloh, Bitva u Stones River, Bitva u Chattanoogy",
+        people: "Nathan Bedford Forrest, Braxton Bragg",
+        desc: "Tennessee bylo posledním státem, který se připojil ke Konfederaci. Kvůli své poloze a říční síti se stalo dějištěm řady nejkrvavějších a rozhodujících bitev celé války."
+      },
+      kentucky: {
+        name: "Kentucky",
+        secession: "Hraniční stát (Formálně neutralita)",
+        capital: "Frankfort",
+        battles: "Bitva u Perryvillu, Bitva u Mill Springs",
+        people: "John C. Breckinridge, Albert Sidney Johnston",
+        desc: "Kentucky vyhlásilo na začátku války přísnou neutralitu, kterou však brzy narušily obě strany. Stát oficiálně zůstal v Unii, ale značná část obyvatel bojovala v řadách Konfederace."
+      }
+    };
+
+    const tooltip = document.getElementById('tooltip');
+    const paths = document.querySelectorAll('.st0');
+
+    paths.forEach(path => {
+      path.addEventListener('mousemove', (e) => {
+        const stateKey = path.getAttribute('data-state');
+        const data = stateData[stateKey];
+        if (data) {
+          tooltip.style.display = 'block';
+          tooltip.style.left = e.pageX + 15 + 'px';
+          tooltip.style.top = e.pageY + 15 + 'px';
+          tooltip.textContent = data.name;
+        }
+      });
+
+      path.addEventListener('mouseleave', () => {
+        tooltip.style.display = 'none';
+      });
+
+      path.addEventListener('click', () => {
+        paths.forEach(p => p.classList.remove('active'));
+        path.classList.add('active');
+
+        const stateKey = path.getAttribute('data-state');
+        const data = stateData[stateKey];
+        if (data) {
+          document.getElementById('stateName').textContent = data.name;
+          document.getElementById('stateSecession').textContent = data.secession;
+          document.getElementById('stateCapital').textContent = data.capital;
+          document.getElementById('stateBattles').textContent = data.battles;
+          document.getElementById('statePeople').textContent = data.people;
+          document.getElementById('stateDesc').textContent = data.desc;
+        }
+      });
+    });
+  </script>
 </body>
 </html>
