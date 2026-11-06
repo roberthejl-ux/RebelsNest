@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+	
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>rebelsnest</title>
+<link href="css/dixie.css" rel="stylesheet" type="text/css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300&display=swap');
+</style>
+<style>
+  #animation_container {
+    position: relative !important;
+    margin: 0 auto !important;
+    display: block !important;
+    max-width: 100% !important;
+    /* Tato řádka zajistí, že kontejner nebude vyšší než samotná mapa */
+    height: auto !important; 
+    padding-bottom: 0px !important;
+    margin-bottom: -10px !important; /* Můžeš jít i do mínusu, pokud tam stále něco straší */
+  }
+  #canvas {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block;
+    margin-bottom: 0px !important;
+  }
+  /* Odstraníme mezeru i z hlavního obalového divu */
+  .container_obsah_full {
+    padding-bottom: 5px !important; 
+  }
+</style>
+	<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+<script src="js/mapa3.js"></script>
+<script>
+var canvas, stage, exportRoot, anim_container, dom_overlay_container, fnStartAnimation;
+function init() {
+	canvas = document.getElementById("canvas");
+	anim_container = document.getElementById("animation_container");
+	dom_overlay_container = document.getElementById("dom_overlay_container");
+	var comp=AdobeAn.getComposition("1BC81D22A0FB40289F46CA83C8F8E839");
+	var lib=comp.getLibrary();
+	var loader = new createjs.LoadQueue(false);
+	loader.addEventListener("fileload", function(evt){handleFileLoad(evt,comp)});
+	loader.addEventListener("complete", function(evt){handleComplete(evt,comp)});
+	var lib=comp.getLibrary();
+	loader.loadManifest(lib.properties.manifest);
+}
+function handleFileLoad(evt, comp) {
+	var images=comp.getImages();	
+	if (evt && (evt.item.type == "image")) { images[evt.item.id] = evt.result; }	
+}
+function handleComplete(evt,comp) {
+	//This function is always called, irrespective of the content. You can use the variable "stage" after it is created in token create_stage.
+	var lib=comp.getLibrary();
+	var ss=comp.getSpriteSheet();
+	var queue = evt.target;
+	var ssMetadata = lib.ssMetadata;
+	for(i=0; i<ssMetadata.length; i++) {
+		ss[ssMetadata[i].name] = new createjs.SpriteSheet( {"images": [queue.getResult(ssMetadata[i].name)], "frames": ssMetadata[i].frames} )
+	}
+	exportRoot = new lib.mapa3();
+	stage = new lib.Stage(canvas);
+	stage.enableMouseOver();	
+	//Registers the "tick" event listener.
+	fnStartAnimation = function() {
+		stage.addChild(exportRoot);
+		createjs.Ticker.framerate = lib.properties.fps;
+		createjs.Ticker.addEventListener("tick", stage);
+	}	    
+	//Code to support hidpi screens and responsive scaling.
+	AdobeAn.makeResponsive(true, 'width', false, 1, [canvas, anim_container, dom_overlay_container]);	
+	AdobeAn.compositionLoaded(lib.properties.id);
+	fnStartAnimation();
+}
+</script>
+	</head>
+<body onload="init();" style="margin:0px;">
+	
+	<!-- hlavička -->
+	
+<div class="hlavicka">
+  <div class="logo">
+	  <a href="../index.html">
+		  <img src="../img/logo_therebelsnest.png" width="70%" alt="logo"/>
+	  </a>
+	</div>
+  <div class="container_menu">
+    <div class="button"><a href="../index.html">ÚVOD</a></div>
+    <div class="button"><a href="../konfederace.html">KONFEDERACE</a></div>
+	  <div class="button"><a href="../valka.html">VÁLKA</a></div>
+	<div class="button"><a href="../armada.html">ARMÁDA</a></div>
+	  <div class="button"><a href="../reenacting.html">REENACTING</a></div>
+	  <div class="button"><a href="../clanky.html">ČLÁNKY</a></div>
+    </div>
+</div>
+	
+	<!-- obsah -->
+
+<div class="container_obsah_full">
+
+<div id="animation_container">
+		<canvas id="canvas" style="position: absolute; display: block;"></canvas>
+		<div id="dom_overlay_container" style="pointer-events:none; overflow:hidden; display: block;">
+		</div>
+</div>
+		<p>Toto je obsah tagu P pro rozvržení</p>
+</div>
+		
+</body>
+</html>
