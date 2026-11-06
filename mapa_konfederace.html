@@ -209,7 +209,7 @@
     <div class="map-wrapper">
       <div class="map-container">
         <!-- Bitmapový podkladový obrázek -->
-        <img src="img/mapa_konfederace_3.jpg" alt="Podkladová mapa" class="map-image">
+        <img src="mapa_konfederace_3.jpg" alt="Podkladová mapa" class="map-image">
 
         <!-- Vektorová vrstava se státy přesně pasující na podklad -->
         <svg class="map-overlay" viewBox="0 0 1920 1252">
@@ -253,7 +253,7 @@
       </div>
 
       <div class="description" id="stateDesc">
-        Texas vyhlásil secesi 1. února 1861 a připojil se ke Konfederaci jako 7. stát. Sloužil jako klíčový dodavatel zásob, koní a vojáků pro západní bojiště a poskytoval důležitou obchodní cestu přes Mexiko mimo dosah blokády.
+        Texas vyhlásil secesi 1. února 1861 a připojil se ke Konfederaci jako 7. stát. Sloužil jako klíčový dodavatel zásob, koní a vojáků pro západní bojiště a poskytoval důležitou obchodní cestu přes bavlnu do Mexika mimo blokádu Unie.
       </div>
     </div>
   </div>
@@ -268,7 +268,7 @@
         capital: "Austin",
         battles: "Bitva o Galveston, Bitva u Sabine Pass",
         people: "Albert Sidney Johnston, John Bell Hood",
-        desc: "Texas vyhlásil secesi 1. února 1861 a připojil se ke Konfederaci jako 7. stát. Sloužil jako klíčový dodavatel zásob, koní a vojáků pro západní bojiště a poskytoval důležitou obchodní cestu přes Mexiko mimo dosah blokády."
+        desc: "Texas vyhlásil secesi 1. února 1861 a připojil se ke Konfederaci jako 7. stát. Sloužil jako klíčový dodavatel zásob, koní a vojáků pro západní bojiště a poskytoval důležitou obchodní cestu přes bavlnu do Mexika mimo blokádu Unie."
       },
       louisiana: {
         name: "Louisiana",
@@ -319,6 +319,14 @@
         desc: "Montgomery v Alabamě bylo původním hlavním městem Konfederace, kde byla sepsána její ústava. Stát byl klíčovým průmyslovým a železničním uzlem Jihu."
       },
       georgia: {
+        name: "Jižní Karolína (South Carolina)",
+        secession: "Secese: 20. prosince 1860 (1. stát)",
+        capital: "Columbia",
+        battles: "Útok na Fort Sumter, Bitva o Charleston",
+        people: "P. G. T. Beauregard, Francis Marion (historická)",
+        desc: "Jižní Karolína byla prvním státem, který vystoupil z Unie. Právě zde, útokem na pevnost Fort Sumter v přístavu Charleston, vypukla v dubnu 1861 samotná občanská válka."
+      },
+      "south-carolina": {
         name: "Georgia",
         secession: "Secese: 19. ledna 1861 (5. stát)",
         capital: "Milledgeville (Atlanta)",
@@ -326,45 +334,37 @@
         people: "Joseph E. Brown, John Brown Gordon",
         desc: "Georgia byla ekonomickým a strategickým srdcem Konfederace. Pád Atlanty a následný Shermanův pochod k moři v roce 1864 zásadně podlomily morálku a kapacity Jihu."
       },
-      "south-carolina": {
-        name: "Jižní Karolína",
-        secession: "Secese: 20. prosince 1860 (1. stát)",
-        capital: "Columbia",
-        battles: "Útok na Fort Sumter, Bitva o Charleston",
-        people: "P. G. T. Beauregard, Francis Marion (historická)",
-        desc: "Jižní Karolína byla prvním státem, který vystoupil z Unie. Právě zde, útokem na pevnost Fort Sumter v přístavu Charleston, vypukla v dubnu 1861 samotná občanská válka."
-      },
       "north-carolina": {
-        name: "Severní Karolína",
-        secession: "Secese: 20. května 1861 (10. stát)",
-        capital: "Raleigh",
-        battles: "Bitva u Bentonvillu, Pevnost Fisher",
-        people: "Zebulon Baird Vance, Daniel Harvey Hill",
-        desc: "Severní Karolína vstoupila do Konfederace jako poslední z jižních států. Poskytla obrovské množství vojáků a přes její pobřeží proudily klíčové pašované zásoby z Evropy."
-      },
-      virginia: {
-        name: "Virginie",
+        name: "Virginie (Virginia)",
         secession: "Secese: 17. dubna 1861 (8. stát)",
         capital: "Richmond",
         battles: "Bitva u Bull Runu, Bitva u Gettysburgu (operace), Sedmidenní bitvy",
         people: "Robert E. Lee, Stonewall Jackson",
-        desc: "Virginie se stala hlavním bojištěm války s hlavním městem Konfederace - Richmondem. Zrodila se zde nejvýznamnější jména velitelů Jihu v čele s generálem Robertem E. Leem."
+        desc: "Virginie se stala hlavním bojištěm války a jejím hlavním městem byl zvolen Richmond. Zrodila se zde nejvýznamnější jména velitelů Jihu v čele s generálem Robertem E. Leem."
       },
-      tennessee: {
-        name: "Tennessee",
-        secession: "Secese: 8. června 1861 (11. stát)",
-        capital: "Nashville",
-        battles: "Bitva u Shiloh, Bitva u Stones River, Bitva u Chattanoogy",
-        people: "Nathan Bedford Forrest, Braxton Bragg",
-        desc: "Tennessee bylo posledním státem, který se připojil ke Konfederaci. Kvůli své poloze a říční síti se stalo dějištěm řady krvavých a rozhodujících bitev celé války."
-      },
-      kentucky: {
+      virginia: {
         name: "Kentucky",
         secession: "Hraniční stát (Formálně neutralita)",
         capital: "Frankfort",
         battles: "Bitva u Perryvillu, Bitva u Mill Springs",
         people: "John C. Breckinridge, Albert Sidney Johnston",
         desc: "Kentucky vyhlásilo na začátku války přísnou neutralitu, kterou však brzy narušily obě strany. Stát oficiálně zůstal v Unii, ale značná část obyvatel bojovala v řadách Konfederace."
+      },
+      tennessee: {
+        name: "Severní Karolína (North Carolina)",
+        secession: "Secese: 20. května 1861 (10. stát)",
+        capital: "Raleigh",
+        battles: "Bitva u Bentonvillu, Pevnost Fisher",
+        people: "Zebulon Baird Vance, Daniel Harvey Hill",
+        desc: "Severní Karolína vstoupila do Konfederace jako poslední z hluboce jižních států. Poskytla obrovské množství vojáků a přes její pobřeží proudily klíčové pašované zásoby z Evropy."
+      },
+      kentucky: {
+        name: "Tennessee",
+        secession: "Secese: 8. června 1861 (11. stát)",
+        capital: "Nashville",
+        battles: "Bitva u Shiloh, Bitva u Stones River, Bitva u Chattanoogy",
+        people: "Nathan Bedford Forrest, Braxton Bragg",
+        desc: "Tennessee bylo posledním státem, který se připojil ke Konfederaci. Kvůli své poloze a říční síti se stalo dějištěm řady nejkrvavějších a rozhodujících bitev celé války."
       }
     };
 
