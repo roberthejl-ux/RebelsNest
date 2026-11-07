@@ -79,19 +79,7 @@ a:hover {
     margin: 0 auto;
     text-align: center;
 }
- .logo-male {
-    position: fixed;
-    top: 10px;
-    left: 15%;
-    z-index: 1000;
-  }
-
-  .logo-male img {
-    display: block;
-    width: 120px;
-    height: auto;
-  }
-.button {
+ .button {
     display: inline-block;
     width: auto;
     margin: 0 4px;
@@ -300,9 +288,6 @@ li {
 
     .hero-logo {
         width: min(46%, 320px);
-    }
-.logo-male {
-      left: 2%;
     }
     .hero-quote {
         max-width: 82%;
